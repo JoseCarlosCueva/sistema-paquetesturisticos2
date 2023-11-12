@@ -22,7 +22,7 @@ public class BienvenidaView extends VerticalLayout {
         img.setWidth("500px");
         add(img);
 
-        H2 header = new H2("--- Sistema de Paquetes Turisticos --- ");
+        H2 header = new H2("--- Sistema de No se  --- ");
         header.addClassNames(Margin.Top.XLARGE, Margin.Bottom.MEDIUM);
         add(header);
         add(new Paragraph("Universidad Tecnológica de Honduras"));
