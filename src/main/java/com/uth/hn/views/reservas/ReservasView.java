@@ -8,7 +8,6 @@ import com.vaadin.collaborationengine.UserInfo;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -25,7 +24,6 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
@@ -178,11 +176,18 @@ public class ReservasView extends Div implements BeforeEnterObserver {
 
         FormLayout formLayout = new FormLayout();
         
-        nombrePaquete = new TextField("Numero de Paquete");
-        nombrePaquete.setPrefixComponent(VaadinIcon.LEVEL_RIGHT_BOLD.create());
+        //nombrePaquete = new TextField("Paquete");
+        //nombrePaquete.setPrefixComponent(VaadinIcon.LEVEL_RIGHT_BOLD.create());
         
-        destino = new TextField("Numero de Cliente");
-        destino.setPrefixComponent(VaadinIcon.LEVEL_RIGHT_BOLD.create());
+        
+        ComboBox<Reservas> nombrePaquete = new ComboBox<>("Paquete");
+        nombrePaquete.setItemLabelGenerator(Reservas::getNombrePaquete);
+        
+        //destino = new TextField("Cliente");
+        //destino.setPrefixComponent(VaadinIcon.LEVEL_RIGHT_BOLD.create());
+        
+        ComboBox<Reservas> destino = new ComboBox<>("Cliente");
+        destino.setItemLabelGenerator(Reservas::getDestino);
 
         precio = new DatePicker("Fecha de Reserva");
 

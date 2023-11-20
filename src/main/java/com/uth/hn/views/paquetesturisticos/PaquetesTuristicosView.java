@@ -1,12 +1,12 @@
 package com.uth.hn.views.paquetesturisticos;
 
+import com.uth.hn.controller.PaquetesTuristicosInteractor;
+import com.uth.hn.controller.PaquetesTuristicosInteractorImpl;
 import com.uth.hn.data.PaquetesTuristicos;
 import com.uth.hn.views.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -22,22 +22,20 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 @PageTitle("PaquetesTuristicos")
 @Route(value = "paquetesTuristicos/:samplePersonID?/:action?(edit)", layout = MainLayout.class)
 @Uses(Icon.class)
-public class PaquetesTuristicosView extends Div implements BeforeEnterObserver {
+public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, PaquetesTuristicosViewModel  {
 
     private final String SAMPLEPERSON_ID = "samplePersonID";
     private final String SAMPLEPERSON_EDIT_ROUTE_TEMPLATE = "paquetesTuristicos/%s/edit";
@@ -48,21 +46,22 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver {
     private TextField destino;
     private TextField precio;
     private TextField descripcion;
-    private DatePicker fechaInicio;
-    private DatePicker fechaFinalizacion;
-    private TextField cupoPersonas;
-   // private Checkbox important;
-
+    private IntegerField duracion;
+    private IntegerField cupoPersonas;
+    
     private final Button cancel = new Button("Cancelar");
     private final Button save = new Button("Guardar");
     private final Button delete = new Button("Eliminar", new Icon(VaadinIcon.TRASH));
 
-    private final BeanValidationBinder<PaquetesTuristicos> binder;
-
     private PaquetesTuristicos paquetesTuristicos;
+    private PaquetesTuristicosInteractor controlador;
+    private List<PaquetesTuristicos> elementos;
 
     public PaquetesTuristicosView( ) {
         addClassNames("paquetes-turisticos-view");
+        
+        controlador = new PaquetesTuristicosInteractorImpl(this);
+        this.elementos = new ArrayList<>();
 
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
@@ -73,13 +72,12 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
-        grid.addColumn("idPaquete").setAutoWidth(true).setHeader("Numero de Paquete");
-        grid.addColumn("nombrePaquete").setAutoWidth(true).setHeader("Nombre");
+        //grid.addColumn("idPaquete").setAutoWidth(true).setHeader("Numero de Paquete");
+        grid.addColumn("nombrePaquete").setAutoWidth(true).setHeader("Nombre del Paquete");
         grid.addColumn("destino").setAutoWidth(true).setHeader("Destino");
         grid.addColumn("precio").setAutoWidth(true).setHeader("Precio");
         grid.addColumn("descripcion").setAutoWidth(true).setHeader("Descripcion");
-        grid.addColumn("fechaInicio").setAutoWidth(true).setHeader("Fecha de Inicio");
-        grid.addColumn("fechaFinalizacion").setAutoWidth(true).setHeader("Fecha de Finalizacion");
+        grid.addColumn("duracion").setAutoWidth(true).setHeader("Duracion de noches");
         /*LitRenderer<PaquetesTuristicos> importantRenderer = LitRenderer.<PaquetesTuristicos>of(
                 "<vaadin-icon icon='vaadin:${item.icon}' style='width: var(--lumo-icon-size-s); height: var(--lumo-icon-size-s); color: ${item.color};'></vaadin-icon>")
                 .withProperty("icon", important -> important.isImportant() ? "check" : "minus").withProperty("color",
@@ -100,13 +98,8 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver {
                 UI.getCurrent().navigate(PaquetesTuristicosView.class);
             }
         });
-
-        // Configure Form
-        binder = new BeanValidationBinder<>(PaquetesTuristicos.class);
-
-        // Bind fields. This is where you'd define e.g. validation rules
-
-        binder.bindInstanceFields(this);
+        
+        controlador.consultarPaquetesturisticos();
 
         cancel.addClickListener(e -> {
             clearForm();
@@ -118,7 +111,6 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver {
                 if (this.paquetesTuristicos == null) {
                     this.paquetesTuristicos = new PaquetesTuristicos();
                 }
-                binder.writeBean(this.paquetesTuristicos);
                 clearForm();
                 refreshGrid();
                 Notification.show("Data updated");
@@ -128,9 +120,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver {
                         "Error updating the data. Somebody else has updated the record while you were making changes.");
                 n.setPosition(Position.MIDDLE);
                 n.addThemeVariants(NotificationVariant.LUMO_ERROR);
-            } catch (ValidationException validationException) {
-                Notification.show("Failed to update the data. Check again that all values are valid");
-            }
+            } 
         });
         
     delete.addClickListener( e -> {
@@ -184,20 +174,25 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver {
         add(precio);
         
         descripcion = new TextField("Descripcion");
-        fechaInicio = new DatePicker("Fecha de Inicio");
-        fechaFinalizacion = new DatePicker("Fecha de Finalizacion");
-        
-        //cupoPersonas = new TextField("Cupo Maximo de Personas");
-        IntegerField cupoPersonas = new IntegerField();
-        cupoPersonas.setLabel("Cupo Maximo de Personas");
-        //cupoPersonas.setHelperText("Max 10 items");
+
+        duracion = new IntegerField();
+        duracion.setLabel("Duracion por noches");
+        duracion.setMin(0);
+        duracion.setMax(10);
+        duracion.setValue(0);  // Asigna un valor Integer
+        duracion.setStepButtonsVisible(true);
+        add(duracion);
+
+
+        cupoPersonas = new IntegerField();
+        cupoPersonas.setLabel("Cupo maximo de Personas");
         cupoPersonas.setMin(0);
         cupoPersonas.setMax(10);
-        cupoPersonas.setValue(0);
+        cupoPersonas.setValue(0);  // Asigna un valor Integer
         cupoPersonas.setStepButtonsVisible(true);
         add(cupoPersonas);
-        //important = new Checkbox("Important");
-        formLayout.add(nombrePaquete, destino, precio, descripcion, fechaInicio, fechaFinalizacion, cupoPersonas);
+        
+        formLayout.add(nombrePaquete, destino, precio, descripcion, duracion, cupoPersonas);
 
         editorDiv.add(formLayout);
         createButtonLayout(editorLayoutDiv);
@@ -234,7 +229,22 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver {
 
     private void populateForm(PaquetesTuristicos value) {
         this.paquetesTuristicos = value;
-        binder.readBean(this.paquetesTuristicos);
 
     }
+
+	@Override
+	public void mostrarPaquetesTuristicosEnGrid(List<PaquetesTuristicos> items) {
+		Collection<PaquetesTuristicos> itemsCollection = items;
+		grid.setItems(itemsCollection);
+		this.elementos = items;
+		
+	}
+
+	@Override
+	public void mostrarMensajeError(String mensaje) {
+		Notification.show(mensaje);
+		
+	}
+
+	
 }

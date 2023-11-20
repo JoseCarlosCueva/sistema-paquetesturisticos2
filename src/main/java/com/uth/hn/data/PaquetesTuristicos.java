@@ -8,11 +8,8 @@ public class PaquetesTuristicos {
     private String destino;
     private String precio;
     private String descripcion;
-    private LocalDate fechaInicio;
-    private LocalDate fechaFinalizacion;
-    private String cupoPersonas;
-    private boolean important;
-    private Integer cupo;
+    private Integer duracion;
+    private Integer cupoPersonas;
     
     public Integer getIdPaquete() {
 		return idPaquete;
@@ -28,7 +25,6 @@ public class PaquetesTuristicos {
 		this.nombrePaquete = nombrePaquete;
 	}
 	
-	
     public String getDestino() {
 		return destino;
 	}
@@ -43,7 +39,6 @@ public class PaquetesTuristicos {
 		this.precio = precio;
 	}
 	
-	
     public String getDescripcion() {
 		return descripcion;
 	}
@@ -51,31 +46,17 @@ public class PaquetesTuristicos {
 		this.descripcion = descripcion;
 	}
 		
-    public LocalDate getFechaInicio() {
-		return fechaInicio;
+    public Integer getDuracion() {
+		return duracion;
 	}
-	public void setFechaInicio(LocalDate fechaInicio) {
-		this.fechaInicio = fechaInicio;
-	}
-	
-    public LocalDate getFechaFinalizacion() {
-		return fechaFinalizacion;
-	}
-	public void setFechaFinalizacion(LocalDate fechaFinalizacion) {
-		this.fechaFinalizacion = fechaFinalizacion;
+	public void setDuracion(Integer duracion) {
+		this.duracion = duracion;
 	}
 
-    public String getCupoPersonas() {
+    public Integer getCupoPersonas() {
 		return cupoPersonas;
 	}
-	public void setCupoPersonas(String cupoPersonas) {
+	public void setCupoPersonas(Integer cupoPersonas) {
 		this.cupoPersonas = cupoPersonas;
 	}
-	/*public boolean isImportant() {
-        return important;
-    }
-    public void setImportant(boolean important) {
-        this.important = important;
-    }*/
-    
 }
