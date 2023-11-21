@@ -45,7 +45,6 @@ public class ReservasView extends Div implements BeforeEnterObserver {
 
     CollaborationAvatarGroup avatarGroup;
 
-    private TextField nombrePaquete;
     private TextField destino;
     private DatePicker precio;
     private TextField descripcion;
@@ -83,9 +82,9 @@ public class ReservasView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
-        grid.addColumn("idReserva").setAutoWidth(true).setHeader("Numero de Reserva");
-        grid.addColumn("nombrePaquete").setAutoWidth(true).setHeader("Numero de Paquete");
-        grid.addColumn("destino").setAutoWidth(true).setHeader("Numero de Cliente");
+        grid.addColumn("idReserva").setAutoWidth(true).setHeader("Número de Reserva");
+        //grid.addColumn("numero").setAutoWidth(true).setHeader("Numero de Paquete");
+        //grid.addColumn("destino").setAutoWidth(true).setHeader("Numero de Cliente");
         grid.addColumn("precio").setAutoWidth(true).setHeader("Fecha de Reserva");
         grid.addColumn("descripcion").setAutoWidth(true).setHeader("Precio Total");
         grid.addColumn("fechaInicio").setAutoWidth(true).setHeader("Estado");
@@ -179,12 +178,14 @@ public class ReservasView extends Div implements BeforeEnterObserver {
         //nombrePaquete = new TextField("Paquete");
         //nombrePaquete.setPrefixComponent(VaadinIcon.LEVEL_RIGHT_BOLD.create());
         
+        /*idReserva = new NumberField();
+        idReserva.setId("txtnumerocuenta");
+        idReserva.setLabel("Número de Cuenta");
+        idReserva.setValue(0.0);*/
         
-        ComboBox<Reservas> nombrePaquete = new ComboBox<>("Paquete");
-        nombrePaquete.setItemLabelGenerator(Reservas::getNombrePaquete);
+        ComboBox<Reservas> numero = new ComboBox<>("Paquete");
+        numero.setItemLabelGenerator(Reservas::getNumero);
         
-        //destino = new TextField("Cliente");
-        //destino.setPrefixComponent(VaadinIcon.LEVEL_RIGHT_BOLD.create());
         
         ComboBox<Reservas> destino = new ComboBox<>("Cliente");
         destino.setItemLabelGenerator(Reservas::getDestino);
@@ -205,7 +206,7 @@ public class ReservasView extends Div implements BeforeEnterObserver {
         fechaInicio.setAllowCustomValue(false);
         add( fechaInicio);
         
-        formLayout.add( nombrePaquete, destino, precio, descripcion, fechaInicio);
+        formLayout.add( numero, destino, precio, descripcion, fechaInicio);
 
         editorDiv.add(avatarGroup, formLayout);
         createButtonLayout(editorLayoutDiv);

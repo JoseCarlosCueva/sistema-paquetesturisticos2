@@ -42,12 +42,12 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
 
     private final Grid<PaquetesTuristicos> grid = new Grid<>(PaquetesTuristicos.class, false);
 
-    private TextField nombrePaquete;
+    private TextField nombre;
     private TextField destino;
     private TextField precio;
     private TextField descripcion;
     private IntegerField duracion;
-    private IntegerField cupoPersonas;
+    private IntegerField cupo;
     
     private final Button cancel = new Button("Cancelar");
     private final Button save = new Button("Guardar");
@@ -73,7 +73,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
 
         // Configure Grid
         //grid.addColumn("idPaquete").setAutoWidth(true).setHeader("Numero de Paquete");
-        grid.addColumn("nombrePaquete").setAutoWidth(true).setHeader("Nombre del Paquete");
+        grid.addColumn("nombre").setAutoWidth(true).setHeader("Nombre del Paquete");
         grid.addColumn("destino").setAutoWidth(true).setHeader("Destino");
         grid.addColumn("precio").setAutoWidth(true).setHeader("Precio");
         grid.addColumn("descripcion").setAutoWidth(true).setHeader("Descripcion");
@@ -86,7 +86,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
                                 : "var(--lumo-disabled-text-color)");*/
 
         //grid.addColumn(importantRenderer).setHeader("cupoPersonas").setAutoWidth(true).setHeader("Cupo de Personas");
-        grid.addColumn("cupoPersonas").setAutoWidth(true).setHeader("Cupo de Personas");
+        grid.addColumn("cupo").setAutoWidth(true).setHeader("Cupo de Personas");
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
         // when a row is selected or deselected, populate form
@@ -158,8 +158,8 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
 
         FormLayout formLayout = new FormLayout();
         
-        nombrePaquete = new TextField("Nombre del Paquete");
-        nombrePaquete.setPrefixComponent(VaadinIcon.FOLDER_ADD.create());
+        nombre = new TextField("Nombre del Paquete");
+        nombre.setPrefixComponent(VaadinIcon.FOLDER_ADD.create());
         
         destino = new TextField("Destino");
         destino.setPrefixComponent(VaadinIcon.AIRPLANE.create());
@@ -184,15 +184,15 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         add(duracion);
 
 
-        cupoPersonas = new IntegerField();
-        cupoPersonas.setLabel("Cupo maximo de Personas");
-        cupoPersonas.setMin(0);
-        cupoPersonas.setMax(10);
-        cupoPersonas.setValue(0);  // Asigna un valor Integer
-        cupoPersonas.setStepButtonsVisible(true);
-        add(cupoPersonas);
+        cupo = new IntegerField();
+        cupo.setLabel("Cupo maximo de Personas");
+        cupo.setMin(0);
+        cupo.setMax(10);
+        cupo.setValue(0);  // Asigna un valor Integer
+        cupo.setStepButtonsVisible(true);
+        add(cupo);
         
-        formLayout.add(nombrePaquete, destino, precio, descripcion, duracion, cupoPersonas);
+        formLayout.add(nombre, destino, precio, descripcion, duracion, cupo);
 
         editorDiv.add(formLayout);
         createButtonLayout(editorLayoutDiv);

@@ -3,25 +3,25 @@ package com.uth.hn.data;
 import java.time.LocalDate;
 
 public class Reservas {
-	private Integer idReserva;
-	private String nombrePaquete;
+	private String idReserva;
+	private String numero;
     private String destino;
     private LocalDate precio;
     private String descripcion;
     private String fechaInicio;
     
     
-    public Integer getIdReserva() {
+    public String getIdReserva() {
 		return idReserva;
 	}
-	public void setIdReserva(Integer idReserva) {
+	public void setIdReserva(String idReserva) {
 		this.idReserva = idReserva;
 	}
-	public String getNombrePaquete() {
-		return nombrePaquete;
+	public String getNumero() {
+		return numero;
 	}
-	public void setNombrePaquete(String nombrePaquete) {
-		this.nombrePaquete = nombrePaquete;
+	public void setNumero(String numero) {
+		this.numero = numero;
 	}
 	
     public String getDestino() {

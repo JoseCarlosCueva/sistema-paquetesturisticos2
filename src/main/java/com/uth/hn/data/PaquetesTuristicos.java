@@ -4,12 +4,12 @@ import java.time.LocalDate;
 
 public class PaquetesTuristicos {
 	private Integer idPaquete;
-	private String nombrePaquete;
+	private String nombre;
     private String destino;
     private String precio;
     private String descripcion;
-    private Integer duracion;
-    private Integer cupoPersonas;
+    private String duracion;
+    private String cupo;
     
     public Integer getIdPaquete() {
 		return idPaquete;
@@ -18,11 +18,11 @@ public class PaquetesTuristicos {
 		this.idPaquete = idPaquete;
 	}
 	
-    public String getNombrePaquete() {
-		return nombrePaquete;
+    public String getNombre() {
+		return nombre;
 	}
-	public void setNombrePaquete(String nombrePaquete) {
-		this.nombrePaquete = nombrePaquete;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 	
     public String getDestino() {
@@ -46,17 +46,17 @@ public class PaquetesTuristicos {
 		this.descripcion = descripcion;
 	}
 		
-    public Integer getDuracion() {
+    public String getDuracion() {
 		return duracion;
 	}
-	public void setDuracion(Integer duracion) {
+	public void setDuracion(String duracion) {
 		this.duracion = duracion;
 	}
 
-    public Integer getCupoPersonas() {
-		return cupoPersonas;
+    public String getCupo() {
+		return cupo;
 	}
-	public void setCupoPersonas(Integer cupoPersonas) {
-		this.cupoPersonas = cupoPersonas;
+	public void setCupoPersonas(String cupoPersonas) {
+		this.cupo = cupoPersonas;
 	}
 }
