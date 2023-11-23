@@ -3,55 +3,55 @@ package com.uth.hn.data;
 import java.time.LocalDate;
 
 public class Reservas {
-	private String idReserva;
-	private String numero;
-    private String destino;
-    private LocalDate precio;
-    private String descripcion;
-    private String fechaInicio;
+	private String idreserva;
+	private String paquete;
+    private String cliente;
+    private LocalDate fecha;
+    private String precio;
+    private String estado;
     
     
-    public String getIdReserva() {
-		return idReserva;
+    public String getIdreserva() {
+		return idreserva;
 	}
-	public void setIdReserva(String idReserva) {
-		this.idReserva = idReserva;
+	public void setIdreserva(String idreserva) {
+		this.idreserva = idreserva;
 	}
-	public String getNumero() {
-		return numero;
+	public String getPaquete() {
+		return paquete;
 	}
-	public void setNumero(String numero) {
-		this.numero = numero;
+	public void setPaquete(String paquete) {
+		this.paquete = paquete;
 	}
 	
-    public String getDestino() {
-		return destino;
+    public String getCliente() {
+		return cliente;
 	}
-	public void setDestino(String destino) {
-		this.destino = destino;
+	public void setCliente(String cliente) {
+		this.cliente = cliente;
 	}	
 	
 	
-    public LocalDate getPrecio() {
+    public LocalDate getFecha() {
+		return fecha;
+	}
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
+	}
+	
+	
+    public String getPrecio() {
 		return precio;
 	}
-	public void setPrecio(LocalDate precio) {
+	public void setFecha(String precio) {
 		this.precio = precio;
 	}
-	
-	
-    public String getDescripcion() {
-		return descripcion;
-	}
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
 		
-	public String getFechaInicio() {
-        return fechaInicio;
+	public String getEstado() {
+        return estado;
     }
-    public void setFechaInicio(String fechaInicio) {
-        this.fechaInicio = fechaInicio;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 	
  

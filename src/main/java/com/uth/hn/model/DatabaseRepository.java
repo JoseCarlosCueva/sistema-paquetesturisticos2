@@ -2,6 +2,7 @@ package com.uth.hn.model;
 
 
 import com.uth.hn.data.PaquetesturisticosResponse;
+import com.uth.hn.data.ReservasResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -15,5 +16,12 @@ public interface DatabaseRepository {
 	})
 	@GET("/pls/apex/jose202210010792/paquetesturisticos/paquetesturisticos")
 	Call<PaquetesturisticosResponse> consultarPaquetesturisticos();
+	
+	@Headers({
+	    "Accept: application/json",
+	    "User-Agent: Retrofit-Sample-App"
+	})
+	@GET("/pls/apex/jose202210010792/paquetesturisticos/reservas")
+	Call<ReservasResponse> consultarReservas();
 	
 }

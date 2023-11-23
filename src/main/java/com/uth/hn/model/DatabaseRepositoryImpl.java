@@ -3,6 +3,7 @@ package com.uth.hn.model;
 import java.io.IOException;
 
 import com.uth.hn.data.PaquetesturisticosResponse;
+import com.uth.hn.data.ReservasResponse;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -37,4 +38,13 @@ public class DatabaseRepositoryImpl {
 		}
 	}
 
+	public ReservasResponse consultarReservas() throws IOException {
+		Call<ReservasResponse> call = client.getDatabase().consultarReservas();
+		Response<ReservasResponse> response = call.execute();//AQUI SE LLAMA A LA BASE DE DATOS
+		if(response.isSuccessful()) {
+			return response.body();
+		}else {
+			return null;
+		}
+	}
 }

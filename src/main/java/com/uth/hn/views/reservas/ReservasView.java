@@ -45,16 +45,16 @@ public class ReservasView extends Div implements BeforeEnterObserver {
 
     CollaborationAvatarGroup avatarGroup;
 
-    private TextField destino;
-    private DatePicker precio;
-    private TextField descripcion;
-    private ComboBox<String> fechaInicio;
+    private TextField idreserva;
+    private TextField paquete;
+    private TextField cliente;
+    private DatePicker fecha;
+    private TextField precio;
+    private ComboBox<String> estado;
 
     private final Button cancel = new Button("Cancelar");
     private final Button save = new Button("Guardar");
     private final Button delete = new Button("Eliminar", new Icon(VaadinIcon.TRASH));
-
-    private final CollaborationBinder<Reservas> binder;
 
     private Reservas reservas;
 
@@ -82,12 +82,12 @@ public class ReservasView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
-        grid.addColumn("idReserva").setAutoWidth(true).setHeader("Número de Reserva");
-        //grid.addColumn("numero").setAutoWidth(true).setHeader("Numero de Paquete");
-        //grid.addColumn("destino").setAutoWidth(true).setHeader("Numero de Cliente");
-        grid.addColumn("precio").setAutoWidth(true).setHeader("Fecha de Reserva");
-        grid.addColumn("descripcion").setAutoWidth(true).setHeader("Precio Total");
-        grid.addColumn("fechaInicio").setAutoWidth(true).setHeader("Estado");
+        grid.addColumn("idreserva").setAutoWidth(true).setHeader("Número de Reserva");
+        //grid.addColumn("paquete").setAutoWidth(true).setHeader("Numero de Paquete");
+        //grid.addColumn("cliente").setAutoWidth(true).setHeader("Numero de Cliente");
+        grid.addColumn("fecha").setAutoWidth(true).setHeader("Fecha de Reserva");
+        grid.addColumn("precio").setAutoWidth(true).setHeader("Precio Total");
+        grid.addColumn("estado").setAutoWidth(true).setHeader("Estado");
         /*LitRenderer<Reservas> importantRenderer = LitRenderer.<Reservas>of(
                 "<vaadin-icon icon='vaadin:${item.icon}' style='width: var(--lumo-icon-size-s); height: var(--lumo-icon-size-s); color: ${item.color};'></vaadin-icon>")
                 .withProperty("icon", important -> important.isImportant() ? "check" : "minus").withProperty("color",
@@ -101,19 +101,13 @@ public class ReservasView extends Div implements BeforeEnterObserver {
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                UI.getCurrent().navigate(String.format(SAMPLEPERSON_EDIT_ROUTE_TEMPLATE, event.getValue().getIdReserva()));
+                UI.getCurrent().navigate(String.format(SAMPLEPERSON_EDIT_ROUTE_TEMPLATE, event.getValue().getIdreserva()));
             } else {
                 clearForm();
                 UI.getCurrent().navigate(ReservasView.class);
             }
         });
 
-        // Configure Form
-        binder = new CollaborationBinder<>(Reservas.class, userInfo);
-
-        // Bind fields. This is where you'd define e.g. validation rules
-
-        binder.bindInstanceFields(this);
 
         cancel.addClickListener(e -> {
             clearForm();
@@ -125,7 +119,6 @@ public class ReservasView extends Div implements BeforeEnterObserver {
                 if (this.reservas == null) {
                     this.reservas = new Reservas();
                 }
-                binder.writeBean(this.reservas);
                 clearForm();
                 refreshGrid();
                 Notification.show("Data updated");
@@ -135,8 +128,6 @@ public class ReservasView extends Div implements BeforeEnterObserver {
                         "Error updating the data. Somebody else has updated the record while you were making changes.");
                 n.setPosition(Position.MIDDLE);
                 n.addThemeVariants(NotificationVariant.LUMO_ERROR);
-            } catch (ValidationException validationException) {
-                Notification.show("Failed to update the data. Check again that all values are valid");
             }
         });
         
@@ -175,38 +166,33 @@ public class ReservasView extends Div implements BeforeEnterObserver {
 
         FormLayout formLayout = new FormLayout();
         
-        //nombrePaquete = new TextField("Paquete");
-        //nombrePaquete.setPrefixComponent(VaadinIcon.LEVEL_RIGHT_BOLD.create());
+        idreserva = new TextField("Número de Reserva");
+        idreserva.setPrefixComponent(VaadinIcon.CALENDAR.create());
         
-        /*idReserva = new NumberField();
-        idReserva.setId("txtnumerocuenta");
-        idReserva.setLabel("Número de Cuenta");
-        idReserva.setValue(0.0);*/
-        
-        ComboBox<Reservas> numero = new ComboBox<>("Paquete");
-        numero.setItemLabelGenerator(Reservas::getNumero);
+        ComboBox<Reservas> paquete = new ComboBox<>("Paquete");
+        paquete.setItemLabelGenerator(Reservas::getPaquete);
         
         
-        ComboBox<Reservas> destino = new ComboBox<>("Cliente");
-        destino.setItemLabelGenerator(Reservas::getDestino);
+        ComboBox<Reservas> cliente = new ComboBox<>("Cliente");
+        cliente.setItemLabelGenerator(Reservas::getCliente);
 
-        precio = new DatePicker("Fecha de Reserva");
+        fecha = new DatePicker("Fecha de Reserva");
 
-        NumberField descripcion = new NumberField();
-        descripcion.setLabel("Precio Total");
-        descripcion.setValue(0.0);
+        NumberField precio = new NumberField();
+        precio.setLabel("Precio Total");
+        precio.setValue(0.0);
         Div dollarPrefix2 = new Div();
         dollarPrefix2.setText("$");
-        descripcion.setPrefixComponent(dollarPrefix2);
+        precio.setPrefixComponent(dollarPrefix2);
         
-        add(descripcion);
+        add(precio);
         
-        fechaInicio = new ComboBox<>("Estado");
-        fechaInicio.setItems("0", "1");
-        fechaInicio.setAllowCustomValue(false);
-        add( fechaInicio);
+        estado = new ComboBox<>("Estado");
+        estado.setItems("0", "1");
+        estado.setAllowCustomValue(false);
+        add( estado);
         
-        formLayout.add( numero, destino, precio, descripcion, fechaInicio);
+        formLayout.add( idreserva, paquete, cliente, fecha, precio, estado);
 
         editorDiv.add(avatarGroup, formLayout);
         createButtonLayout(editorLayoutDiv);
@@ -242,16 +228,7 @@ public class ReservasView extends Div implements BeforeEnterObserver {
     }
 
     private void populateForm(Reservas value) {
-        this.reservas = value;
-        String topic = null;
-        if (this.reservas != null && this.reservas.getIdReserva() != null) {
-            topic = "samplePerson/" + this.reservas.getIdReserva();
-            avatarGroup.getStyle().set("visibility", "visible");
-        } else {
-            avatarGroup.getStyle().set("visibility", "hidden");
-        }
-        binder.setTopic(topic, () -> this.reservas);
-        avatarGroup.setTopic(topic);
+    	 this.reservas = value;
 
     }
 }
