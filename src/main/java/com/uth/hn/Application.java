@@ -17,7 +17,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @NpmPackage(value = "@fontsource/roboto-mono", version = "4.5.0")
 @Theme(value = "sistema-paquetesturisticos", variant = Lumo.DARK)
-@Push
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {

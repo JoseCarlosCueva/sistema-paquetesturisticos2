@@ -1,7 +1,5 @@
 package com.uth.hn.data;
 
-import java.time.LocalDate;
-
 public class PaquetesTuristicos {
 	private Integer idPaquete;
 	private String nombre;

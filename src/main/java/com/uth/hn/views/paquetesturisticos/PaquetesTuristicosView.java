@@ -33,12 +33,12 @@ import java.util.Optional;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 @PageTitle("PaquetesTuristicos")
-@Route(value = "paquetesTuristicos/:samplePersonID?/:action?(edit)", layout = MainLayout.class)
+@Route(value = "paquetesTuristicos/:paquetesTuristicosID?/:action?(edit)", layout = MainLayout.class)
 @Uses(Icon.class)
 public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, PaquetesTuristicosViewModel  {
 
-    private final String SAMPLEPERSON_ID = "samplePersonID";
-    private final String SAMPLEPERSON_EDIT_ROUTE_TEMPLATE = "paquetesTuristicos/%s/edit";
+    private final String PAQUETESTURISTICOS_ID = "paquetesTuristicosID";
+    private final String PAQUETESTURISTICOS_EDIT_ROUTE_TEMPLATE = "paquetesTuristicos/%s/edit";
 
     private final Grid<PaquetesTuristicos> grid = new Grid<>(PaquetesTuristicos.class, false);
 
@@ -92,7 +92,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                UI.getCurrent().navigate(String.format(SAMPLEPERSON_EDIT_ROUTE_TEMPLATE, event.getValue().getIdPaquete()));
+                UI.getCurrent().navigate(String.format(PAQUETESTURISTICOS_EDIT_ROUTE_TEMPLATE, event.getValue().getIdPaquete()));
             } else {
                 clearForm();
                 UI.getCurrent().navigate(PaquetesTuristicosView.class);
@@ -131,24 +131,35 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        Optional<Long> samplePersonId = event.getRouteParameters().get(SAMPLEPERSON_ID).map(Long::parseLong);
-        if (samplePersonId.isPresent()) {
-           /* Optional<SamplePerson> samplePersonFromBackend = samplePersonService.get(samplePersonId.get());
-            if (samplePersonFromBackend.isPresent()) {
-                populateForm(samplePersonFromBackend.get());
+        Optional<Integer> paquetesTuristicosIdPaquete = event.getRouteParameters().get(PAQUETESTURISTICOS_ID).map(Integer::parseInt);;
+        if (paquetesTuristicosIdPaquete.isPresent()) {
+           PaquetesTuristicos paquetesTuristicosFromBackend =  obtenerPaquetesTuristicos(paquetesTuristicosIdPaquete.get());
+            if (paquetesTuristicosFromBackend != null) {
+                populateForm(paquetesTuristicosFromBackend);
             } else {
                 Notification.show(
-                        String.format("The requested samplePerson was not found, ID = %s", samplePersonId.get()), 3000,
+                        String.format("El paquete con ID = %s no existe", paquetesTuristicosIdPaquete.get()), 3000,
                         Notification.Position.BOTTOM_START);
                 // when a row is selected but the data is no longer available,
                 // refresh grid
                 refreshGrid();
                 event.forwardTo(PaquetesTuristicosView.class);
-            }*/
+            }
         }
     }
 
-    private void createEditorLayout(SplitLayout splitLayout) {
+    private PaquetesTuristicos obtenerPaquetesTuristicos(Integer paquetesTuristicosIdPaquete) {
+    	PaquetesTuristicos paquetesTuristicosEncontrado = null;
+		for (PaquetesTuristicos paquetesTuristicos : elementos) {
+			if(paquetesTuristicos.getIdPaquete() == paquetesTuristicosIdPaquete) {
+				paquetesTuristicosEncontrado = paquetesTuristicos;
+				break;
+			}
+		}
+		return null;
+	}
+
+	private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();
         editorLayoutDiv.setClassName("editor-layout");
 
@@ -229,6 +240,22 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
 
     private void populateForm(PaquetesTuristicos value) {
         this.paquetesTuristicos = value;
+        
+       /* if(value == null) {
+        	this.nombre.setValue("");
+            this.destino.setValue("");
+            this.precio.setValue("");
+            this.descripcion.setValue("");
+            this.duracion.setValue("");
+            this.cupo.setValue("");
+        }else {
+        this.nombre.setValue(value.getNombre());
+        this.destino.setValue(value.getDestino());
+        this.precio.setValue(value.getPrecio());
+        this.descripcion.setValue(value.getDescripcion());
+        this.duracion.setValue(value.getDuracion());
+        this.cupo.setValue(value.getCupo());
+    }*/
 
     }
 
