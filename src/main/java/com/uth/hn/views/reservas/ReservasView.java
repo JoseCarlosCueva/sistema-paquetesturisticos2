@@ -100,7 +100,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
             }
         });
 
-        //this.controladorReservas.consultarReservas();
+        this.controladorReservas.consultarReservas();
         
         cancel.addClickListener(e -> {
             clearForm();

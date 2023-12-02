@@ -1,12 +1,13 @@
 package com.uth.hn.data;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Reservas {
 	private String idreserva;
 	private String paquete;
     private String cliente;
-    private LocalDate fecha;
+    private Date fecha;
     private String precio;
     private String estado;
     
@@ -32,10 +33,10 @@ public class Reservas {
 	}	
 	
 	
-    public LocalDate getFecha() {
+    public Date  getFecha() {
 		return fecha;
 	}
-	public void setFecha(LocalDate fecha) {
+	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 	}
 	

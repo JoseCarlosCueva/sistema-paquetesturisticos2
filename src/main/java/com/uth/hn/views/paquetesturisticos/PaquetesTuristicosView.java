@@ -44,7 +44,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
 
     private TextField nombre;
     private TextField destino;
-    private TextField precio;
+    private NumberField precio;
     private TextField descripcion;
     private IntegerField duracion;
     private IntegerField cupo;
@@ -92,7 +92,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                UI.getCurrent().navigate(String.format(PAQUETESTURISTICOS_EDIT_ROUTE_TEMPLATE, event.getValue().getIdPaquete()));
+                UI.getCurrent().navigate(String.format(PAQUETESTURISTICOS_EDIT_ROUTE_TEMPLATE, event.getValue().getIdpaquete()));
             } else {
                 clearForm();
                 UI.getCurrent().navigate(PaquetesTuristicosView.class);
@@ -131,7 +131,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        Optional<Integer> paquetesTuristicosIdPaquete = event.getRouteParameters().get(PAQUETESTURISTICOS_ID).map(Integer::parseInt);;
+        Optional<Integer> paquetesTuristicosIdPaquete = event.getRouteParameters().get(PAQUETESTURISTICOS_ID).map(Integer::parseInt);
         if (paquetesTuristicosIdPaquete.isPresent()) {
            PaquetesTuristicos paquetesTuristicosFromBackend =  obtenerPaquetesTuristicos(paquetesTuristicosIdPaquete.get());
             if (paquetesTuristicosFromBackend != null) {
@@ -151,12 +151,12 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
     private PaquetesTuristicos obtenerPaquetesTuristicos(Integer paquetesTuristicosIdPaquete) {
     	PaquetesTuristicos paquetesTuristicosEncontrado = null;
 		for (PaquetesTuristicos paquetesTuristicos : elementos) {
-			if(paquetesTuristicos.getIdPaquete() == paquetesTuristicosIdPaquete) {
+			if(paquetesTuristicos.getIdpaquete() == paquetesTuristicosIdPaquete) {
 				paquetesTuristicosEncontrado = paquetesTuristicos;
 				break;
 			}
 		}
-		return null;
+		return paquetesTuristicosEncontrado;
 	}
 
 	private void createEditorLayout(SplitLayout splitLayout) {
@@ -175,7 +175,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         destino = new TextField("Destino");
         destino.setPrefixComponent(VaadinIcon.AIRPLANE.create());
 
-        NumberField precio = new NumberField();
+        precio = new NumberField();
         precio.setLabel("Precio");
         precio.setValue(0.0);
         Div dollarPrefix = new Div();
@@ -241,21 +241,21 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
     private void populateForm(PaquetesTuristicos value) {
         this.paquetesTuristicos = value;
         
-       /* if(value == null) {
+        if(value == null) {
         	this.nombre.setValue("");
             this.destino.setValue("");
-            this.precio.setValue("");
+            this.precio.setValue(1.0);
             this.descripcion.setValue("");
-            this.duracion.setValue("");
-            this.cupo.setValue("");
+            this.duracion.setValue(5);
+            this.cupo.setValue(1);
         }else {
         this.nombre.setValue(value.getNombre());
         this.destino.setValue(value.getDestino());
         this.precio.setValue(value.getPrecio());
         this.descripcion.setValue(value.getDescripcion());
-        this.duracion.setValue(value.getDuracion());
-        this.cupo.setValue(value.getCupo());
-    }*/
+        this.duracion.setValue(Integer.parseInt(value.getDuracion()));
+        this.cupo.setValue(Integer.parseInt(value.getCupo()));
+    }
 
     }
 

@@ -1,19 +1,19 @@
 package com.uth.hn.data;
 
 public class PaquetesTuristicos {
-	private Integer idPaquete;
+	private Integer idpaquete;
 	private String nombre;
     private String destino;
-    private String precio;
+    private Double precio;
     private String descripcion;
     private String duracion;
     private String cupo;
     
-    public Integer getIdPaquete() {
-		return idPaquete;
+    public Integer getIdpaquete() {
+		return idpaquete;
 	}
-	public void setIdPaquete(Integer idPaquete) {
-		this.idPaquete = idPaquete;
+	public void setIdpaquete(Integer idpaquete) {
+		this.idpaquete = idpaquete;
 	}
 	
     public String getNombre() {
@@ -30,10 +30,10 @@ public class PaquetesTuristicos {
 		this.destino = destino;
 	}	
 	
-    public String getPrecio() {
+    public Double getPrecio() {
 		return precio;
 	}
-	public void setPrecio(String precio) {
+	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
 	
