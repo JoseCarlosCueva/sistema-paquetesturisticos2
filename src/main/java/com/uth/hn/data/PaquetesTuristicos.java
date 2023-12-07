@@ -54,7 +54,7 @@ public class PaquetesTuristicos {
     public String getCupo() {
 		return cupo;
 	}
-	public void setCupoPersonas(String cupoPersonas) {
-		this.cupo = cupoPersonas;
+	public void setCupo(String cupo) {
+		this.cupo = cupo;
 	}
 }

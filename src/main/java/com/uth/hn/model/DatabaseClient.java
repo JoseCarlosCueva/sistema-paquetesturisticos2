@@ -10,10 +10,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DatabaseClient {
-	
+
 	private Retrofit retrofit;
 	private HttpLoggingInterceptor interceptor;
-
+	
 	public DatabaseClient(String url, Long timeout) {
 		interceptor = new HttpLoggingInterceptor();
 		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -33,14 +33,11 @@ public class DatabaseClient {
 		
 	}
 
-
-
 	public DatabaseRepository getDatabase() {
 		return retrofit.create(DatabaseRepository.class);
 	}
-		
-	}
 
+}
 	
 	
 

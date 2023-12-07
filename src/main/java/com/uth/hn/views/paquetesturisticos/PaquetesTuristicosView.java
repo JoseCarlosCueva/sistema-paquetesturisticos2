@@ -110,10 +110,33 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
             try {
                 if (this.paquetesTuristicos == null) {
                     this.paquetesTuristicos = new PaquetesTuristicos();
+                    //ESTOY CREANDO UN NUEVO PAQUETETURISTICO
+                    
+                    this.paquetesTuristicos.setNombre(this.nombre.getValue());
+                    this.paquetesTuristicos.setDestino(this.destino.getValue());
+                    this.paquetesTuristicos.setPrecio(this.precio.getValue());
+                    this.paquetesTuristicos.setDescripcion(this.descripcion.getValue());
+                    this.paquetesTuristicos.setDuracion(this.duracion.getValue().toString());
+                    this.paquetesTuristicos.setCupo(this.cupo.getValue().toString());
+
+
+                    this.controlador.crearPaquetesturisticos(paquetesTuristicos);
+                    
+                }else {
+                	  //ESTOY ACTUALIZANDO UNO QUE YA EXISTE
+                	this.paquetesTuristicos.setNombre(this.nombre.getValue());
+                    this.paquetesTuristicos.setDestino(this.destino.getValue());
+                    this.paquetesTuristicos.setPrecio(this.precio.getValue());
+                    this.paquetesTuristicos.setDescripcion(this.descripcion.getValue());
+                    this.paquetesTuristicos.setDuracion(this.duracion.getValue().toString());
+                    this.paquetesTuristicos.setCupo(this.cupo.getValue().toString());
+
+
+                    this.controlador.actualizarPaquetesturisticos(paquetesTuristicos);
                 }
+                
                 clearForm();
                 refreshGrid();
-                Notification.show("Data updated");
                 UI.getCurrent().navigate(PaquetesTuristicosView.class);
             } catch (ObjectOptimisticLockingFailureException exception) {
                 Notification n = Notification.show(
@@ -232,6 +255,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
     private void refreshGrid() {
         grid.select(null);
         grid.getDataProvider().refreshAll();
+        //this.controlador.consultarPaquetesturisticos();
     }
 
     private void clearForm() {
@@ -244,10 +268,10 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         if(value == null) {
         	this.nombre.setValue("");
             this.destino.setValue("");
-            this.precio.setValue(1.0);
+            this.precio.setValue(0.0);
             this.descripcion.setValue("");
-            this.duracion.setValue(5);
-            this.cupo.setValue(1);
+            this.duracion.setValue(0);
+            this.cupo.setValue(0);
         }else {
         this.nombre.setValue(value.getNombre());
         this.destino.setValue(value.getDestino());
@@ -269,6 +293,12 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
 
 	@Override
 	public void mostrarMensajeError(String mensaje) {
+		Notification.show(mensaje);
+		
+	}
+
+	@Override
+	public void mostrarMensajeExito(String mensaje) {
 		Notification.show(mensaje);
 		
 	}

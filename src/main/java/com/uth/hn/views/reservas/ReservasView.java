@@ -47,7 +47,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
     private TextField paquete;
     private TextField cliente;
     private DatePicker fecha;
-    private TextField precio;
+    private NumberField precio;
     private ComboBox<String> estado;
 
     private final Button cancel = new Button("Cancelar");
@@ -100,7 +100,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
             }
         });
 
-        this.controladorReservas.consultarReservas();
+        controladorReservas.consultarReservas();
         
         cancel.addClickListener(e -> {
             clearForm();
@@ -172,7 +172,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
 
         fecha = new DatePicker("Fecha de Reserva");
 
-        NumberField precio = new NumberField();
+        precio = new NumberField();
         precio.setLabel("Precio Total");
         precio.setValue(0.0);
         Div dollarPrefix2 = new Div();

@@ -2,11 +2,13 @@ package com.uth.hn.model;
 
 import java.io.IOException;
 
+import com.uth.hn.data.PaquetesTuristicos;
 import com.uth.hn.data.PaquetesturisticosResponse;
 import com.uth.hn.data.ReservasResponse;
 
 import retrofit2.Call;
 import retrofit2.Response;
+import okhttp3.ResponseBody;
 
 public class DatabaseRepositoryImpl {
 	
@@ -36,6 +38,18 @@ public class DatabaseRepositoryImpl {
 		}else {
 			return null;
 		}
+	}
+	
+	public boolean crearPaquetesturisticos(PaquetesTuristicos nuevo) throws IOException {
+		Call<ResponseBody> call = client.getDatabase().crearPaquetesturisticos(nuevo);
+		Response<ResponseBody> response = call.execute();//AQUI SE LLAMA A LA BASE DE DATOS
+		return response.isSuccessful();
+	}
+
+	public boolean actualizarPaquetesturisticos(PaquetesTuristicos existente) throws IOException {
+		Call<ResponseBody> call = client.getDatabase().actualizarPaquetesturisticos(existente);
+		Response<ResponseBody> response = call.execute();//AQUI SE LLAMA A LA BASE DE DATOS
+		return response.isSuccessful();
 	}
 
 	public ReservasResponse consultarReservas() throws IOException {
