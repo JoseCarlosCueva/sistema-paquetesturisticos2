@@ -7,6 +7,7 @@ import com.uth.hn.views.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -52,7 +53,9 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
     private final Button cancel = new Button("Cancelar");
     private final Button save = new Button("Guardar");
     private final Button delete = new Button("Eliminar", new Icon(VaadinIcon.TRASH));
-
+    
+    private ConfirmDialog deleteDialog;
+    
     private PaquetesTuristicos paquetesTuristicos;
     private PaquetesTuristicosInteractor controlador;
     private List<PaquetesTuristicos> elementos;
@@ -147,9 +150,11 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         });
         
     delete.addClickListener( e -> {
+    	this.deleteDialog.open();
         	
         });
-        
+    delete.setEnabled(false);
+    
     }
 
     @Override
@@ -226,6 +231,20 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         cupo.setStepButtonsVisible(true);
         add(cupo);
         
+        deleteDialog = new ConfirmDialog();
+        deleteDialog.setHeader("¿Desea eliminar este PaqueteTuristico?");
+        deleteDialog.setText(
+                "Confirma la eliminación del paquete seleccionado");
+
+        deleteDialog.setCancelable(true);
+        deleteDialog.setCancelText("Cancelar");
+        deleteDialog.setConfirmText("Eliminar");
+        deleteDialog.setConfirmButtonTheme("error primary");
+        deleteDialog.addConfirmListener(event -> {
+        	this.controlador.eliminarPaquetesturisticos(this.paquetesTuristicos.getIdpaquete());
+        	refreshGrid();
+        });
+        
         formLayout.add(nombre, destino, precio, descripcion, duracion, cupo);
 
         editorDiv.add(formLayout);
@@ -255,7 +274,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
     private void refreshGrid() {
         grid.select(null);
         grid.getDataProvider().refreshAll();
-        //this.controlador.consultarPaquetesturisticos();
+        this.controlador.consultarPaquetesturisticos();
     }
 
     private void clearForm() {
@@ -264,7 +283,6 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
 
     private void populateForm(PaquetesTuristicos value) {
         this.paquetesTuristicos = value;
-        
         if(value == null) {
         	this.nombre.setValue("");
             this.destino.setValue("");
@@ -272,6 +290,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
             this.descripcion.setValue("");
             this.duracion.setValue(0);
             this.cupo.setValue(0);
+            delete.setEnabled(false);
         }else {
         this.nombre.setValue(value.getNombre());
         this.destino.setValue(value.getDestino());
@@ -279,6 +298,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         this.descripcion.setValue(value.getDescripcion());
         this.duracion.setValue(Integer.parseInt(value.getDuracion()));
         this.cupo.setValue(Integer.parseInt(value.getCupo()));
+        delete.setEnabled(true);
     }
 
     }

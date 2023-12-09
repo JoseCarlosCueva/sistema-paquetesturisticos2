@@ -8,7 +8,7 @@ public class Reservas {
 	private String paquete;
     private String cliente;
     private Date fecha;
-    private String precio;
+    private Double precio;
     private String estado;
     
     
@@ -40,11 +40,10 @@ public class Reservas {
 		this.fecha = fecha;
 	}
 	
-	
-    public String getPrecio() {
+    public Double getPrecio() {
 		return precio;
 	}
-	public void setFecha(String precio) {
+	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
 		

@@ -9,5 +9,7 @@ public interface ReservasViewModel {
 	void mostrarReservasEnGrid(List<Reservas> items);
 
 	void mostrarMensajeError(String mensaje);
+	
+	void mostrarMensajeExito(String mensaje);
 
 }

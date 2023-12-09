@@ -62,5 +62,20 @@ public class PaquetesTuristicosInteractorImpl implements PaquetesTuristicosInter
 		
 	}
 
+	@Override
+	public void eliminarPaquetesturisticos(Integer id) {
+		try {
+			boolean creado = this.modelo.eliminarPaquetesturisticos(id);
+			if(creado == true) {
+				this.vista.mostrarMensajeExito("PaqueteTuristito borrado exitosamente");
+		}else {
+			this.vista.mostrarMensajeError("Hubo un problema al borrar el PaqueteTuristito");
+		}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
 
 }

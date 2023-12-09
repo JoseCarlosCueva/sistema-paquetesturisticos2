@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.uth.hn.data.PaquetesTuristicos;
 import com.uth.hn.data.PaquetesturisticosResponse;
+import com.uth.hn.data.Reservas;
 import com.uth.hn.data.ReservasResponse;
 
 import retrofit2.Call;
@@ -51,6 +52,12 @@ public class DatabaseRepositoryImpl {
 		Response<ResponseBody> response = call.execute();//AQUI SE LLAMA A LA BASE DE DATOS
 		return response.isSuccessful();
 	}
+	
+	public boolean eliminarPaquetesturisticos(Integer id) throws IOException {
+		Call<ResponseBody> call = client.getDatabase().eliminarPaquetesturisticos(id);
+		Response<ResponseBody> response = call.execute();//AQUI SE LLAMA A LA BASE DE DATOS
+		return response.isSuccessful();
+	}
 
 	public ReservasResponse consultarReservas() throws IOException {
 		Call<ReservasResponse> call = client.getDatabase().consultarReservas();
@@ -60,5 +67,23 @@ public class DatabaseRepositoryImpl {
 		}else {
 			return null;
 		}
+	}
+	
+	public boolean crearReservas(Reservas nuevo) throws IOException {
+		Call<ResponseBody> call = client.getDatabase().crearReservas(nuevo);
+		Response<ResponseBody> response = call.execute();//AQUI SE LLAMA A LA BASE DE DATOS
+		return response.isSuccessful();
+	}
+
+	public boolean actualizarReservas(Reservas existente) throws IOException {
+		Call<ResponseBody> call = client.getDatabase().actualizarReservas(existente);
+		Response<ResponseBody> response = call.execute();//AQUI SE LLAMA A LA BASE DE DATOS
+		return response.isSuccessful();
+	}
+	
+	public boolean eliminarReservas(String idreserva) throws IOException {
+		Call<ResponseBody> call = client.getDatabase().eliminarReservas(idreserva);
+		Response<ResponseBody> response = call.execute();//AQUI SE LLAMA A LA BASE DE DATOS
+		return response.isSuccessful();
 	}
 }

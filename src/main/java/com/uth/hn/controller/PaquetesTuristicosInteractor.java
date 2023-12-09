@@ -7,5 +7,6 @@ public interface PaquetesTuristicosInteractor {
 	void consultarPaquetesturisticos();
 	void crearPaquetesturisticos(PaquetesTuristicos nuevo);
 	void actualizarPaquetesturisticos(PaquetesTuristicos existente);
+	void eliminarPaquetesturisticos(Integer id);
 	
 }

@@ -2,6 +2,7 @@ package com.uth.hn.controller;
 
 import java.io.IOException;
 
+import com.uth.hn.data.Reservas;
 import com.uth.hn.data.ReservasResponse;
 import com.uth.hn.model.DatabaseRepositoryImpl;
 import com.uth.hn.views.reservas.ReservasViewModel;
@@ -30,5 +31,50 @@ public class ReservasInteractorImpl implements ReservasInteractor {
 			e.printStackTrace();
 		}	
 		}
+
+	@Override
+	public void crearReservas(Reservas nuevo) {
+		try {
+			boolean creado = this.modelo.crearReservas(nuevo);
+			if(creado == true) {
+				this.vista.mostrarMensajeExito("Reservas creado exitosamente");
+		}else {
+			this.vista.mostrarMensajeError("Hubo un problema al crear la Reserva");
+		}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void actualizarReservas(Reservas existente) {
+		try {
+			boolean creado = this.modelo.actualizarReservas(existente);
+			if(creado == true) {
+				this.vista.mostrarMensajeExito("Reservas  modificado exitosamente");
+		}else {
+			this.vista.mostrarMensajeError("Hubo un problema al modificar la Reserva");
+		}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void eliminarReservas(String idreserva) {
+		try {
+			boolean creado = this.modelo.eliminarReservas(idreserva);
+			if(creado == true) {
+				this.vista.mostrarMensajeExito("Reservas borrado exitosamente");
+		}else {
+			this.vista.mostrarMensajeError("Hubo un problema al borrar la Reserva");
+		}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 }

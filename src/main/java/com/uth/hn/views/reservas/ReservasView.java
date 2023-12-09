@@ -2,6 +2,7 @@ package com.uth.hn.views.reservas;
 
 import com.uth.hn.controller.ReservasInteractor;
 import com.uth.hn.controller.ReservasInteractorImpl;
+import com.uth.hn.data.PaquetesTuristicos;
 import com.uth.hn.data.Reservas;
 import com.uth.hn.views.MainLayout;
 import com.vaadin.flow.component.UI;
@@ -26,8 +27,12 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -109,12 +114,36 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
 
         save.addClickListener(e -> {
             try {
-                if (this.reservas == null) {
+            	if (this.reservas == null) {
                     this.reservas = new Reservas();
+                    //ESTOY CREANDO UN NUEVO PAQUETETURISTICO
+                    
+                    this.reservas.setIdreserva(this.idreserva.getValue());
+
+                    ZoneId defaultZoneId = ZoneId.systemDefault();
+                    Date date = Date.from(this.fecha.getValue().atStartOfDay(defaultZoneId).toInstant());
+                    this.reservas.setFecha(date);
+                    this.reservas.setPrecio(this.precio.getValue());
+                    this.reservas.setEstado(this.estado.getValue());
+
+
+                    this.controladorReservas.crearReservas(reservas);
+                    
+                }else {
+                	  //ESTOY ACTUALIZANDO UNO QUE YA EXISTE
+                	
+                	ZoneId defaultZoneId = ZoneId.systemDefault();
+                    Date date = Date.from(this.fecha.getValue().atStartOfDay(defaultZoneId).toInstant());
+                    this.reservas.setFecha(date);
+                    this.reservas.setPrecio(this.precio.getValue());
+                    this.reservas.setEstado(this.estado.getValue());
+
+
+                    this.controladorReservas.actualizarReservas(reservas);
                 }
+            	
                 clearForm();
                 refreshGrid();
-                Notification.show("Data updated");
                 UI.getCurrent().navigate(ReservasView.class);
             } catch (ObjectOptimisticLockingFailureException exception) {
                 Notification n = Notification.show(
@@ -133,11 +162,11 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        Optional<Long> reservasIdreserva = event.getRouteParameters().get(RESERVAS_ID).map(Long::parseLong);
+        Optional<String> reservasIdreserva = event.getRouteParameters().get(RESERVAS_ID);
         if (reservasIdreserva.isPresent()) {
-           /* Reservas reservasFromBackend = obtenerReservas(reservasIdreserva.get());
-            if (reservasFromBackend.isPresent()) {
-                populateForm(reservasFromBackend.get());
+           Reservas reservasFromBackend = obtenerReservas(reservasIdreserva.get());
+            if (reservasFromBackend != null) {
+                populateForm(reservasFromBackend);
             } else {
                 Notification.show(
                         String.format("La reserva con ID = %s no existe", reservasIdreserva.get()), 3000,
@@ -146,11 +175,22 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
                 // refresh grid
                 refreshGrid();
                 event.forwardTo(ReservasView.class);
-            }*/
+            }
         }
     }
 
-    private void createEditorLayout(SplitLayout splitLayout) {
+    private Reservas obtenerReservas(String reservasIdreserva) {
+    	Reservas reservasEncontrado = null;
+		for (Reservas reservas : elementos) {
+			if(reservas.getIdreserva().equals(reservasIdreserva)) {
+				reservasEncontrado = reservas;
+				break;
+			}
+		}
+		return reservasEncontrado;
+	}
+
+	private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();
         editorLayoutDiv.setClassName("editor-layout");
 
@@ -215,6 +255,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
     private void refreshGrid() {
         grid.select(null);
         grid.getDataProvider().refreshAll();
+        //this.controlador.consultarreservas();
     }
 
     private void clearForm() {
@@ -223,6 +264,24 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
 
     private void populateForm(Reservas value) {
     	 this.reservas = value;
+    	 if(value == null) {
+         	this.idreserva.setValue("");
+             this.paquete.clear();
+             this.cliente.clear();
+             //this.fecha.setValue("");
+             this.precio.setValue(0.0);
+             this.estado.setValue("");
+             delete.setEnabled(false);
+         }else {
+         this.idreserva.setValue(value.getIdreserva());
+         //this.paquete.setValue(value.getPaquete());
+         //this.cliente.setValue(value.getCliente());
+         //this.fecha.setValue(value.getFecha());
+         this.precio.setValue(value.getPrecio());
+         //this.estado.setValue(value.getEstado());
+         delete.setEnabled(true);
+     }
+   
 
     }
 
@@ -236,6 +295,12 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
 
 	@Override
 	public void mostrarMensajeError(String mensaje) {
+		Notification.show(mensaje);
+		
+	}
+
+	@Override
+	public void mostrarMensajeExito(String mensaje) {
 		Notification.show(mensaje);
 		
 	}
