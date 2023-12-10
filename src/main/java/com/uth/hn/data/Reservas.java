@@ -46,7 +46,7 @@ public class Reservas {
 	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
-		
+		 
 	public String getEstado() {
         return estado;
     }

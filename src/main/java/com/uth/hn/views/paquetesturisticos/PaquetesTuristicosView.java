@@ -45,7 +45,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
 
     private TextField nombre;
     private TextField destino;
-    private NumberField precio;
+    private NumberField precio; 
     private TextField descripcion;
     private IntegerField duracion;
     private IntegerField cupo;
@@ -108,7 +108,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
             clearForm();
             refreshGrid();
         });
-
+ 
         save.addClickListener(e -> {
             try {
                 if (this.paquetesTuristicos == null) {
@@ -209,7 +209,6 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         Div dollarPrefix = new Div();
         dollarPrefix.setText("$");
         precio.setPrefixComponent(dollarPrefix);
-        
         add(precio);
         
         descripcion = new TextField("Descripcion");

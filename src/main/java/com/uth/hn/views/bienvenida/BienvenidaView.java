@@ -19,7 +19,7 @@ public class BienvenidaView extends VerticalLayout {
         setSpacing(false);
 
         Image img = new Image("https://www.entornoturistico.com/wp-content/uploads/2020/09/agencia-de-viajes-1024x594.jpg", "logo");
-        img.setWidth("500px");
+        img.setWidth("700px");
         add(img);
 
         H2 header = new H2("--- Sistema de Paquetes Turisticos  --- ");
