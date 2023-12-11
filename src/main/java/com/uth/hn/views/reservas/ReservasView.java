@@ -84,8 +84,8 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
 
         // Configure Grid
         grid.addColumn("idreserva").setAutoWidth(true).setHeader("Número de Reserva");
-        grid.addColumn("paquete").setAutoWidth(true).setHeader("Numero de Paquete");
-        grid.addColumn("cliente").setAutoWidth(true).setHeader("Numero de Cliente");
+        grid.addColumn("paquete").setAutoWidth(true).setHeader("Paquete");
+        grid.addColumn("cliente").setAutoWidth(true).setHeader("Cliente");
         grid.addColumn("fecha").setAutoWidth(true).setHeader("Fecha de Reserva");
         grid.addColumn("precio").setAutoWidth(true).setHeader("Precio Total");
         grid.addColumn("estado").setAutoWidth(true).setHeader("Estado");
@@ -133,7 +133,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
 					
 					 //VALIDO SI HAY UN ELEMENTO SELECCIONADO
                     if(paquete.getValue() != null) {
-                    	String idPaquete = paquete.getValue().getIdpaquete().toString();
+                    	Integer idPaquete = paquete.getValue().getIdpaquete();
     					this.reservas.setPaquete(idPaquete);
     					this.controladorReservas.crearReservas(reservas);
                     }else {
@@ -147,8 +147,16 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
                     this.reservas.setFecha(date);
                     this.reservas.setPrecio(this.precio.getValue());
                     this.reservas.setEstado(this.estado.getValue());
-
-                    this.controladorReservas.actualizarReservas(reservas);
+                	
+					 //VALIDO SI HAY UN ELEMENTO SELECCIONADO
+                   if(paquete.getValue() != null) {
+                   	Integer idPaquete = paquete.getValue().getIdpaquete();
+   					this.reservas.setPaquete(idPaquete);
+   					this.controladorReservas.actualizarReservas(reservas);
+                   }else {
+                   	Notification.show("Debes de seleccionar un paquete para actualizar una reserva");
+                   }
+                    
                 }
             	
                 clearForm();
@@ -298,7 +306,8 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
              
          }else {
          this.idreserva.setValue(value.getIdreserva());
-         //this.paquete.setValue(value.getPaquete());
+         PaquetesTuristicos PaquetesSeleccionado = buscarPaquetes(value.getPaquete());
+         this.paquete.setValue(PaquetesSeleccionado);
          //this.cliente.setValue(value.getCliente());
          if (value.getFecha() != null) {
              this.fecha.setValue(value.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
@@ -311,6 +320,17 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
      }
  
     }
+
+	private PaquetesTuristicos buscarPaquetes(Integer idPaquete) {
+		PaquetesTuristicos PaquetesEncontrado = null;
+		for (PaquetesTuristicos paquete : paquetesDisponibles) {
+			if(paquete.getIdpaquete() == idPaquete) {
+				PaquetesEncontrado = paquete;
+				break;
+			}
+		}
+		return PaquetesEncontrado;
+	}
 
 	@Override
 	public void mostrarReservasEnGrid(List<Reservas> items) {

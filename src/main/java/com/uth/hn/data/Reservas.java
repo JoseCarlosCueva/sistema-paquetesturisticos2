@@ -1,11 +1,10 @@
 package com.uth.hn.data;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 public class Reservas {
 	private String idreserva;
-	private String paquete;
+	private Integer paquete;
     private String cliente;
     private Date fecha;
     private Double precio;
@@ -18,10 +17,10 @@ public class Reservas {
 	public void setIdreserva(String idreserva) {
 		this.idreserva = idreserva;
 	}
-	public String getPaquete() {
+	public Integer getPaquete() {
 		return paquete;
 	}
-	public void setPaquete(String paquete) {
+	public void setPaquete(Integer paquete) {
 		this.paquete = paquete;
 	}
 	
