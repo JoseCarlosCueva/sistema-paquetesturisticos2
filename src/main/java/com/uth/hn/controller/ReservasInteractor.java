@@ -8,5 +8,6 @@ public interface ReservasInteractor {
 	void crearReservas(Reservas nuevo);
 	void actualizarReservas(Reservas existente);
 	void eliminarReservas(String idreserva);
+	void consultarPaquetesTuristicos();
 
 }

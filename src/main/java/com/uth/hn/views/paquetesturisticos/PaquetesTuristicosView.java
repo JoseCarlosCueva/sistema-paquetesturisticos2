@@ -108,7 +108,8 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
             clearForm();
             refreshGrid();
         });
- 
+        
+        save.setId("btnguardarpaquetesTuristicos");
         save.addClickListener(e -> {
             try {
                 if (this.paquetesTuristicos == null) {
@@ -198,6 +199,7 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         FormLayout formLayout = new FormLayout();
         
         nombre = new TextField("Nombre del Paquete");
+        nombre.setId("txtnombre");
         nombre.setPrefixComponent(VaadinIcon.FOLDER_ADD.create());
         
         destino = new TextField("Destino");

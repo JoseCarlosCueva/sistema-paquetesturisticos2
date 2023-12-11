@@ -2,6 +2,7 @@ package com.uth.hn.controller;
 
 import java.io.IOException;
 
+import com.uth.hn.data.PaquetesturisticosResponse;
 import com.uth.hn.data.Reservas;
 import com.uth.hn.data.ReservasResponse;
 import com.uth.hn.model.DatabaseRepositoryImpl;
@@ -71,6 +72,19 @@ public class ReservasInteractorImpl implements ReservasInteractor {
 		}else {
 			this.vista.mostrarMensajeError("Hubo un problema al borrar la Reserva");
 		}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void consultarPaquetesTuristicos() {
+		try {
+			PaquetesturisticosResponse respuesta = this.modelo.consultarPaquetesturisticos();
+			if(respuesta != null && respuesta.getItems() != null) {
+				this.vista.llenarComboboxPaquetesTuristicos(respuesta.getItems());
+			}
 		}catch(IOException e) {
 			e.printStackTrace();
 		}

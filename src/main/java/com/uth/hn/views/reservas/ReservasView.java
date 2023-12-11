@@ -50,8 +50,8 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
     private final Grid<Reservas> grid = new Grid<>(Reservas.class, false);
 
     private TextField idreserva;
-    private TextField paquete;
-    private TextField cliente; 
+    private ComboBox<PaquetesTuristicos> paquete;
+    private ComboBox<Reservas> cliente; 
     private DatePicker fecha;
     private NumberField precio;
     private ComboBox<String> estado;
@@ -65,12 +65,14 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
     private Reservas reservas;
     private ReservasInteractor controladorReservas;
     private List<Reservas> elementos;
+    private List<PaquetesTuristicos> paquetesDisponibles;
 
     public ReservasView( ) {
         addClassNames("reservas-view");  
         
         controladorReservas = new ReservasInteractorImpl(this);
         this.elementos = new ArrayList<>();
+        this.paquetesDisponibles = new ArrayList<>();
 
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
@@ -82,8 +84,8 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
 
         // Configure Grid
         grid.addColumn("idreserva").setAutoWidth(true).setHeader("Número de Reserva");
-        //grid.addColumn("paquete").setAutoWidth(true).setHeader("Numero de Paquete");
-        //grid.addColumn("cliente").setAutoWidth(true).setHeader("Numero de Cliente");
+        grid.addColumn("paquete").setAutoWidth(true).setHeader("Numero de Paquete");
+        grid.addColumn("cliente").setAutoWidth(true).setHeader("Numero de Cliente");
         grid.addColumn("fecha").setAutoWidth(true).setHeader("Fecha de Reserva");
         grid.addColumn("precio").setAutoWidth(true).setHeader("Precio Total");
         grid.addColumn("estado").setAutoWidth(true).setHeader("Estado");
@@ -107,7 +109,8 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
             }
         });
 
-        controladorReservas.consultarReservas();
+        this.controladorReservas.consultarReservas();
+        this.controladorReservas.consultarPaquetesTuristicos();
         
         cancel.addClickListener(e -> {
             clearForm();
@@ -127,10 +130,15 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
                     this.reservas.setFecha(date);
                     this.reservas.setPrecio(this.precio.getValue());
                     this.reservas.setEstado(this.estado.getValue());
-
-
-                    this.controladorReservas.crearReservas(reservas);
-                    
+					
+					 //VALIDO SI HAY UN ELEMENTO SELECCIONADO
+                    if(paquete.getValue() != null) {
+                    	String idPaquete = paquete.getValue().getIdpaquete().toString();
+    					this.reservas.setPaquete(idPaquete);
+    					this.controladorReservas.crearReservas(reservas);
+                    }else {
+                    	Notification.show("Debes de seleccionar un paquete para crear una reserva");
+                    }
                 }else {
                 	  //ESTOY ACTUALIZANDO UNO QUE YA EXISTE
                 	
@@ -139,7 +147,6 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
                     this.reservas.setFecha(date);
                     this.reservas.setPrecio(this.precio.getValue());
                     this.reservas.setEstado(this.estado.getValue());
-
 
                     this.controladorReservas.actualizarReservas(reservas);
                 }
@@ -205,10 +212,10 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
         idreserva = new TextField("Número de Reserva");
         idreserva.setPrefixComponent(VaadinIcon.CALENDAR.create());
         
-        ComboBox<Reservas> paquete = new ComboBox<>("Paquete");
-        paquete.setItemLabelGenerator(Reservas::getPaquete);
+        paquete = new ComboBox<>("Paquete");
+        paquete.setItemLabelGenerator(PaquetesTuristicos::getNombre);
         
-        ComboBox<Reservas> cliente = new ComboBox<>("Cliente");
+        cliente = new ComboBox<>("Cliente");
         cliente.setItemLabelGenerator(Reservas::getCliente);
 
         fecha = new DatePicker("Fecha de Reserva");
@@ -322,6 +329,13 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
 	@Override
 	public void mostrarMensajeExito(String mensaje) {
 		Notification.show(mensaje);
+		
+	}
+
+	@Override
+	public void llenarComboboxPaquetesTuristicos(List<PaquetesTuristicos> items) {
+		paquete.setItems(items);
+		paquetesDisponibles = items;
 		
 	}
 }
