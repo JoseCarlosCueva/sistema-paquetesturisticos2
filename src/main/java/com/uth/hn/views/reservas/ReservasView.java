@@ -51,7 +51,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
 
     private TextField idreserva;
     private ComboBox<PaquetesTuristicos> paquete;
-    private ComboBox<Reservas> cliente; 
+    private ComboBox<String>cliente; 
     private DatePicker fecha;
     private NumberField precio;
     private ComboBox<String> estado;
@@ -128,6 +128,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
                     ZoneId defaultZoneId = ZoneId.systemDefault();
                     Date date = Date.from(this.fecha.getValue().atStartOfDay(defaultZoneId).toInstant());
                     this.reservas.setFecha(date);
+                    this.reservas.setCliente(this.cliente.getValue());
                     this.reservas.setPrecio(this.precio.getValue());
                     this.reservas.setEstado(this.estado.getValue());
 					
@@ -224,7 +225,10 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
         paquete.setItemLabelGenerator(PaquetesTuristicos::getNombre);
         
         cliente = new ComboBox<>("Cliente");
-        cliente.setItemLabelGenerator(Reservas::getCliente);
+        cliente.setId("cbgenero");
+        cliente.setAllowCustomValue(true);
+        cliente.setItems("1","2", "3","4", "5","6", "7","8", "9","10");
+        cliente.setHelperText("Seleccione el estado de la reserva");
 
         fecha = new DatePicker("Fecha de Reserva");
         
@@ -298,7 +302,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
     	 if(value == null) {
          	this.idreserva.setValue("");
              this.paquete.clear();
-             this.cliente.clear();
+             this.cliente.setValue("");
              this.fecha.setValue(null);
              this.precio.setValue(0.0);
              this.estado.setValue("");
@@ -308,7 +312,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
          this.idreserva.setValue(value.getIdreserva());
          PaquetesTuristicos PaquetesSeleccionado = buscarPaquetes(value.getPaquete());
          this.paquete.setValue(PaquetesSeleccionado);
-         //this.cliente.setValue(value.getCliente());
+         this.cliente.setValue(value.getCliente());
          if (value.getFecha() != null) {
              this.fecha.setValue(value.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
          } else {
