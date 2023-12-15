@@ -4,6 +4,8 @@ import com.uth.hn.controller.ReservasInteractor;
 import com.uth.hn.controller.ReservasInteractorImpl;
 import com.uth.hn.data.PaquetesTuristicos;
 import com.uth.hn.data.Reservas;
+import com.uth.hn.data.ReservasReport;
+import com.uth.hn.service.ReportGenerator;
 import com.uth.hn.views.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -13,6 +15,8 @@ import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -33,7 +37,9 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -112,6 +118,12 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
         this.controladorReservas.consultarReservas();
         this.controladorReservas.consultarPaquetesTuristicos();
         
+        GridContextMenu<Reservas> menu = grid.addContextMenu();
+        menu.addItem("Generar Reporte", event -> {
+        	Notification.show("Generando reporte...");
+        	generarReporte();
+        });
+        
         cancel.addClickListener(e -> {
             clearForm();
             refreshGrid();
@@ -146,6 +158,7 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
                 	ZoneId defaultZoneId = ZoneId.systemDefault();
                     Date date = Date.from(this.fecha.getValue().atStartOfDay(defaultZoneId).toInstant());
                     this.reservas.setFecha(date);
+                    this.reservas.setCliente(this.cliente.getValue());
                     this.reservas.setPrecio(this.precio.getValue());
                     this.reservas.setEstado(this.estado.getValue());
                 	
@@ -178,7 +191,34 @@ public class ReservasView extends Div implements BeforeEnterObserver, ReservasVi
     delete.setEnabled(false);
     }
 
-    @Override
+    private void generarReporte() {
+    	ReportGenerator generador = new ReportGenerator();
+    	ReservasReport datasource = new ReservasReport();
+		datasource.setReservas(elementos);
+		Map<String, Object> parametros = new HashMap<>();
+		parametros.put("LOGO_IMG", "logo.jpg");
+		parametros.put("FIRMA_IMG", "firma.png");
+		
+		boolean generado = generador.generarReportePDF("reportereserva", parametros, datasource);
+		if(generado) {
+			String ubicacion = generador.getReportPath();
+			Anchor url = new Anchor(ubicacion, "Abrir Reporte");
+			url.setTarget("_blank");
+			
+			Notification notificacionReporte = new Notification(url);
+			notificacionReporte.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			notificacionReporte.setDuration(10000);
+			notificacionReporte.open();
+		}else {			
+			Notification notificacionError = new Notification("Ocurrió un problema al generar el reporte.");
+			notificacionError.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			notificacionError.setDuration(4000);
+			notificacionError.open();
+		}
+		
+	}
+
+	@Override
     public void beforeEnter(BeforeEnterEvent event) {
         Optional<String> reservasIdreserva = event.getRouteParameters().get(RESERVAS_ID);
         if (reservasIdreserva.isPresent()) {

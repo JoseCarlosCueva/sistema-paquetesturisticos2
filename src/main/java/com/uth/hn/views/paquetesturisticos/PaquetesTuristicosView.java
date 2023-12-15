@@ -3,6 +3,8 @@ package com.uth.hn.views.paquetesturisticos;
 import com.uth.hn.controller.PaquetesTuristicosInteractor;
 import com.uth.hn.controller.PaquetesTuristicosInteractorImpl;
 import com.uth.hn.data.PaquetesTuristicos;
+import com.uth.hn.data.PaquetesReport;
+import com.uth.hn.service.ReportGenerator;
 import com.uth.hn.views.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -12,6 +14,8 @@ import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -29,7 +33,9 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
@@ -103,6 +109,13 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
         });
         
         controlador.consultarPaquetesturisticos();
+        
+        GridContextMenu<PaquetesTuristicos> menu = grid.addContextMenu();
+        menu.addItem("Generar Reporte", event -> {
+        	Notification.show("Generando reporte...");
+        	generarReporte();
+        });
+
 
         cancel.addClickListener(e -> {
             clearForm();
@@ -158,7 +171,34 @@ public class PaquetesTuristicosView extends Div implements BeforeEnterObserver, 
     
     }
 
-    @Override
+    private void generarReporte() {
+    	ReportGenerator generador = new ReportGenerator();
+    	PaquetesReport datasource = new PaquetesReport();
+		datasource.setPaquetes(elementos);
+		Map<String, Object> parametros = new HashMap<>();
+		parametros.put("LOGO_IMG", "logo.jpg");
+		parametros.put("FIRMA_IMG", "firma.png");
+		
+		boolean generado = generador.generarReportePDF("reportepaquetes", parametros, datasource);
+		if(generado) {
+			String ubicacion = generador.getReportPath();
+			Anchor url = new Anchor(ubicacion, "Abrir Reporte");
+			url.setTarget("_blank");
+			
+			Notification notificacionReporte = new Notification(url);
+			notificacionReporte.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			notificacionReporte.setDuration(10000);
+			notificacionReporte.open();
+		}else {			
+			Notification notificacionError = new Notification("Ocurrió un problema al generar el reporte.");
+			notificacionError.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			notificacionError.setDuration(4000);
+			notificacionError.open();
+		}
+		
+	}
+
+	@Override
     public void beforeEnter(BeforeEnterEvent event) {
         Optional<Integer> paquetesTuristicosIdPaquete = event.getRouteParameters().get(PAQUETESTURISTICOS_ID).map(Integer::parseInt);
         if (paquetesTuristicosIdPaquete.isPresent()) {
